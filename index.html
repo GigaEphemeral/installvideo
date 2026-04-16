@@ -120,7 +120,7 @@
                         // 尝试静音后重新播放，这样不会改变布局，并且能自动开始，同时用户可手动取消静音
                         video.muted = true;
                         video.play().then(() => {
-                            if (statusDiv) statusDiv.textContent = '🔊 已静音自动播放 | 点击音量图标取消静音';
+                            if (statusDiv) statusDiv.textContent = '';
                             // 可选: 在播放几秒后给出提示，但无需干扰主要体验
                         }).catch(err => {
                             console.warn('静音自动播放依然失败:', err);
