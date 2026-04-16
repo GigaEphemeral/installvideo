@@ -94,7 +94,7 @@
         </video>
     </div>
     <!-- 可选：简洁提示信息，方便调试或美观，不影响主体功能 -->
-    <div class="video-loading-tip" id="videoStatus">🎬 自适应视口 | 画面完整显示</div>
+    <div class="video-loading-tip" id="videoStatus"></div>
 
     <script>
         (function() {
@@ -124,7 +124,7 @@
                             // 可选: 在播放几秒后给出提示，但无需干扰主要体验
                         }).catch(err => {
                             console.warn('静音自动播放依然失败:', err);
-                            if (statusDiv) statusDiv.textContent = '⚠️ 请点击播放按钮';
+                            if (statusDiv) statusDiv.textContent = '';
                         });
                     });
                 }
@@ -133,7 +133,7 @@
                 video.addEventListener('error', (e) => {
                     console.error('视频加载错误:', e);
                     if (statusDiv) {
-                        statusDiv.textContent = '❌ 视频文件加载失败，请检查 25.mp4 路径';
+                        statusDiv.textContent = '';
                         statusDiv.style.backgroundColor = 'rgba(200,0,0,0.7)';
                     }
                 });
@@ -141,7 +141,7 @@
                 // 监听视频成功加载数据后，恢复状态提示
                 video.addEventListener('canplay', () => {
                     if (statusDiv && !statusDiv.textContent.includes('失败')) {
-                        statusDiv.textContent = '✅ 视频已就绪 | 自适应窗口大小';
+                        statusDiv.textContent = '';
                     }
                 });
                 
