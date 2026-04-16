@@ -2,28 +2,38 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual for assembling</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Manual for assembling - YouTube 视频</title>
     <style>
-        /* 重置内外边距，让容器完全贴合视口 */
+        /* 彻底重置内外边距，确保无任何额外空白 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* 让html和body完全占满视口，并隐藏滚动条，保证视频区域不溢出 */
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden; /* 隐藏滚动条 */
-            background-color: #000;
+            overflow: hidden;     /* 关键：移除页面滚动条 */
+            background-color: #000; /* 黑色背景 */
         }
 
+        /* 视频容器采用固定定位，铺满整个窗口，无任何边距或内边距 */
         .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        /* YouTube iframe 样式：宽高完全填充容器，无边框 */
         .youtube-iframe {
             width: 100%;
             height: 100%;
@@ -34,7 +44,46 @@
 </head>
 <body>
     <div class="video-container">
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/YQKrZo-QdX8?si=YfU3dIV2YqFRIqM-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <!-- 
+            YouTube 嵌入链接：
+            - 使用 youtube-nocookie.com 增强隐私保护
+            - autoplay=1&mute=1: 静音自动播放（满足浏览器自动播放策略）
+            - loop=1&playlist=YQKrZo-QdX8: 循环播放此视频
+            - controls=1: 显示播放控件（包含全屏按钮）
+            - modestbranding=1: 简化YouTube标志
+            - rel=0: 播放结束后不显示相关视频
+            - 移除 showinfo 等已废弃参数，保持简洁
+            
+            注意：iframe 会自适应父容器大小，从而实现适配浏览器窗口尺寸。
+        -->
+        <iframe class="youtube-iframe" 
+                src="https://www.youtube-nocookie.com/embed/YQKrZo-QdX8?autoplay=1&mute=1&loop=1&playlist=YQKrZo-QdX8&controls=1&modestbranding=1&rel=0" 
+                title="YouTube video player - Manual for assembling"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+        </iframe>
     </div>
+
+    <script>
+        (function() {
+            // 确保视频容器完全适配窗口大小（CSS已经处理，此处添加防抖确保动态调整）
+            // 监听窗口大小变化，强制重绘以保证 iframe 尺寸刷新（可选，解决少数浏览器适配延迟）
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    // 强制触发重绘，确保 iframe 尺寸完美适配
+                    const container = document.querySelector('.video-container');
+                    if (container) {
+                        container.style.transform = 'translateZ(0)';
+                        setTimeout(() => {
+                            if (container) container.style.transform = '';
+                        }, 100);
+                    }
+                }, 100);
+            });
+        })();
+    </script>
 </body>
 </html>
