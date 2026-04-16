@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Manual for assembling</title>
+    <style>
+        /* 彻底重置内外边距，确保无任何额外空白 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 让html和body完全占满视口，并隐藏滚动条，保证视频区域不溢出 */
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;     /* 关键：移除页面滚动条 */
+            background-color: #000; /* 黑色背景，避免视频边缘出现白边 */
+        }
+
+        /* 视频容器采用固定定位，铺满整个窗口，无任何边距或内边距 */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 视频元素样式：宽高完全填充容器，保持比例且不溢出边界 */
+        .assembly-video {
+            width: 100%;
+            height: 100%;
+            /* object-fit: contain 确保视频完整可见（不裁剪，不溢出），并保留原始比例 */
+            object-fit: contain;
+            display: block;
+            outline: none;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <!-- 
+            视频源：使用本地文件 "installResource1080.mp4"
+            保留 controls 属性，显示完整的播放器控件（播放/暂停、音量、全屏、进度条等）
+            autoplay 属性尝试自动播放
+            muted 属性确保视频静音，以满足现代浏览器的自动播放策略（用户可手动点击音量按钮取消静音）
+            playsinline 属性确保在移动设备上内联播放，不强制全屏
+        -->
+        <video class="assembly-video" controls autoplay muted playsinline>
+            <source src="installResource1080.mp4" type="video/mp4">
+            <!-- 不显示后备文本，完全去除任何消息提示 -->
+        </video>
+    </div>
+
+    <script>
+        (function() {
+            // 获取视频元素
+            const video = document.querySelector('.assembly-video');
+            if (video) {
+                // 确保视频尝试自动播放，并静默处理任何错误（不显示提示）
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        // 静默捕获错误，不显示任何用户提示。
+                        // 由于 muted 和 autoplay 已存在，自动播放基本能成功。
+                        // 如果因极端情况失败，用户仍可通过控件手动播放。
+                    });
+                }
+                
+                // 移除任何可能产生的加载失败提示（完全静默）
+                video.addEventListener('error', (e) => {
+                    e.preventDefault();
+                    return false;
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
